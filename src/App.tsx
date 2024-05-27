@@ -1,109 +1,26 @@
 import { useEffect, useState } from "react";
+import { files } from "./files";
 
-type fileType = {
+export type fileType = {
     name: string;
     files: (string | fileType)[];
 };
 
-const files: fileType = {
-    name: "~",
-    files: [
-        "Resume.pdf",
-        "PassportScan.jpg",
-        "TaxReturns2023.pdf",
-        {
-            name: "Work",
-            files: [
-                "ProjectProposal.docx",
-                "MeetingNotes.txt",
-                "ClientPresentation.pptx",
-                {
-                    name: "Archives",
-                    files: [
-                        "OldProject1.zip",
-                        "OldProject2.zip",
-                        {
-                            name: "FinancialReports",
-                            files: ["Report_Q1_2022.pdf", "Report_Q2_2022.pdf"],
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            name: "Personal",
-            files: [
-                {
-                    name: "FamilyVacations",
-                    files: [
-                        {
-                            name: "Hawaii2022",
-                            files: [
-                                "BeachDay1.jpg",
-                                "LuauNight.mp4",
-                                "SunsetHike.jpg",
-                            ],
-                        },
-                        {
-                            name: "Europe2021",
-                            files: [
-                                "EiffelTower.jpg",
-                                "GondolaRide.mp4",
-                                "ColosseumTour.jpg",
-                            ],
-                        },
-                    ],
-                },
-                "RecipeCollection.docx",
-                {
-                    name: "HealthRecords",
-                    files: ["BloodTestResults.pdf", "VaccinationRecord.pdf"],
-                },
-                {
-                    name: "Kids",
-                    files: [
-                        "FirstSteps.mp4",
-                        "FirstDayOfSchool.jpg",
-                        "ArtProjects.pdf",
-                    ],
-                },
-            ],
-        },
-        {
-            name: "Administrative",
-            files: [
-                "LeaseAgreement.pdf",
-                "InsurancePolicy2024.pdf",
-                "CarRegistration.jpg",
-                {
-                    name: "Utilities",
-                    files: [
-                        "ElectricBill_April2024.pdf",
-                        "WaterBill_April2024.pdf",
-                        "InternetBill_April2024.pdf",
-                    ],
-                },
-            ],
-        },
-    ],
-};
-
 function findDirectory(dirName: (typeof files)["name"]): false | fileType {
-    let foundObj = false;
+    let foundDirectory: false | fileType = false;
     JSON.stringify(files, (_, nestedValue) => {
         if (nestedValue && nestedValue["name"] === dirName) {
-            foundObj = nestedValue;
+            foundDirectory = nestedValue;
         }
-        console.log(JSON.stringify(foundObj));
         return nestedValue;
     });
-    return foundObj;
+    return foundDirectory;
 }
 
 function findParentDirectory(
     dirName: (typeof files)["name"]
 ): false | fileType {
-    let foundObj = false;
+    let foundParentDirectory = false;
     JSON.stringify(files, (_, nestedValue) => {
         if (
             nestedValue &&
@@ -112,11 +29,11 @@ function findParentDirectory(
                 (obj: { name: string }) => obj.name === dirName
             )
         ) {
-            foundObj = nestedValue;
+            foundParentDirectory = nestedValue;
         }
         return nestedValue;
     });
-    return foundObj;
+    return foundParentDirectory;
 }
 
 function App() {
@@ -138,12 +55,12 @@ function App() {
         const currDir = findDirectory(path);
         switch (splitCommand[0].toLocaleLowerCase()) {
             case "":
-                setTerminalState((s) => [...s, `user@laptop ${path} % `]);
+                setTerminalState((s) => [...s, `admin@laptop ${path} % `]);
                 break;
             case "help":
                 setTerminalState((s) => [
                     ...s,
-                    `user@laptop ${path} % ${formJson.terminalInput}`,
+                    `admin@laptop ${path} % ${formJson.terminalInput}`,
                     "Available commands:",
                     "clear - Clear the terminal screen",
                     "pwd - Print the current working directory",
@@ -158,7 +75,7 @@ function App() {
             case "pwd":
                 setTerminalState((s) => [
                     ...s,
-                    `user@laptop ${path} % ${formJson.terminalInput}`,
+                    `admin@laptop ${path} % ${formJson.terminalInput}`,
                     path,
                 ]);
                 break;
@@ -166,7 +83,7 @@ function App() {
                 if (currDir)
                     setTerminalState((s) => [
                         ...s,
-                        `user@laptop ${path} % ${formJson.terminalInput}`,
+                        `admin@laptop ${path} % ${formJson.terminalInput}`,
                         ...currDir.files.map((file) =>
                             typeof file === "string" ? file : file.name
                         ),
@@ -178,9 +95,8 @@ function App() {
                     if (parentDir) setPath(parentDir.name);
                     return;
                 }
-                if (findDirectory(splitCommand[1])) {
-                    setPath(splitCommand[1]);
-                }
+                if (findDirectory(splitCommand[1])) setPath(splitCommand[1]);
+
                 break;
             case "rm":
                 if (formJson.terminalInput === "rm -rf ./") {
@@ -190,7 +106,7 @@ function App() {
             default:
                 setTerminalState((s) => [
                     ...s,
-                    `user@laptop ${path} % ${formJson.terminalInput}`,
+                    `admin@laptop ${path} % ${formJson.terminalInput}`,
                     `zsh: command not found: ${splitCommand[0]}`,
                 ]);
                 break;
@@ -224,15 +140,13 @@ function App() {
                 <p>{s}</p>
             ))}
             <form id="terminal-form" onSubmit={handleCommand}>
-                <label id="terminal-label">
-                    user@laptop {path} %{" "}
-                    <input
-                        id="terminal-input"
-                        name="terminalInput"
-                        type="text"
-                        autoFocus
-                    />
-                </label>
+                <label htmlFor="terminalInput">admin@laptop {path} % </label>
+                <input
+                    id="terminal-input"
+                    name="terminalInput"
+                    type="text"
+                    autoFocus
+                />
             </form>
         </>
     );
