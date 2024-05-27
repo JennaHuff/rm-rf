@@ -136,7 +136,7 @@ function App() {
             " "
         );
         const currDir = findDirectory(path);
-        switch (splitCommand[0]) {
+        switch (splitCommand[0].toLocaleLowerCase()) {
             case "":
                 setTerminalState((s) => [...s, `user@laptop ${path} % `]);
                 break;
@@ -194,7 +194,6 @@ function App() {
                     `zsh: command not found: ${splitCommand[0]}`,
                 ]);
                 break;
-            // Scroll #terminal-form into view
         }
         const terminalForm = document.getElementById("terminal-form");
         if (terminalForm) {
@@ -219,11 +218,10 @@ function App() {
             document.removeEventListener("click", handleClick);
         };
     }, []);
-
     return (
         <>
             {terminalState.map((s) => (
-                <p id="terminal-log">{s}</p>
+                <p>{s}</p>
             ))}
             <form id="terminal-form" onSubmit={handleCommand}>
                 <label id="terminal-label">
