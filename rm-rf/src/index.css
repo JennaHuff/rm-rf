@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Monaco, monospace;
+}
+
+body {
+    background-color: #ffffff;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    word-wrap: anywhere;
+
+    height: 100vh;
+    padding: 10px;
+}
+
+#terminal-label {
+    width: 80vw;
+}
+
+#terminal-input {
+    width: 80vw;
+
+    border: none;
+    outline: none;
+}
