@@ -136,7 +136,7 @@ function App() {
         const currDir = findDirectory(path);
         switch (splitCommand[0]) {
             case "clear":
-                setTerminalState((s) => []);
+                setTerminalState(() => []);
                 break;
             case "pwd":
                 setTerminalState((s) => [
