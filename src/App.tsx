@@ -135,6 +135,18 @@ function App() {
         );
         const currDir = findDirectory(path);
         switch (splitCommand[0]) {
+            case "help":
+                setTerminalState((s) => [
+                    ...s,
+                    `user@laptop ${path} % ${formJson.terminalInput}`,
+                    "Available commands:",
+                    "clear - Clear the terminal screen",
+                    "pwd - Print the current working directory",
+                    "ls - List the contents of the current directory",
+                    "cd [directory] - Change the current directory",
+                    "rm -rf ./ - Empty the current directory",
+                ]);
+                break;
             case "clear":
                 setTerminalState(() => []);
                 break;
