@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type fileType = {
     name: string;
@@ -201,6 +201,24 @@ function App() {
             terminalForm.scrollIntoView({ block: "center" });
         }
     }
+
+    useEffect(() => {
+        function handleClick() {
+            const selection = window.getSelection();
+            if (!selection || selection.toString() === "") {
+                const terminalInput = document.getElementById("terminal-input");
+                if (terminalInput) {
+                    terminalInput.focus();
+                }
+            }
+        }
+
+        document.addEventListener("click", handleClick);
+
+        return () => {
+            document.removeEventListener("click", handleClick);
+        };
+    }, []);
 
     return (
         <>
