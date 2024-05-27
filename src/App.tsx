@@ -137,6 +137,9 @@ function App() {
         );
         const currDir = findDirectory(path);
         switch (splitCommand[0]) {
+            case "":
+                setTerminalState((s) => [...s, `user@laptop ${path} % `]);
+                break;
             case "help":
                 setTerminalState((s) => [
                     ...s,
