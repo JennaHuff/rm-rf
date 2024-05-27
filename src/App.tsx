@@ -134,10 +134,11 @@ function App() {
             document.removeEventListener("click", handleClick);
         };
     }, []);
+
     return (
         <>
             {terminalState.map((s) => (
-                <p>{s}</p>
+                <p key={crypto.randomUUID()}>{s}</p>
             ))}
             <form id="terminal-form" onSubmit={handleCommand}>
                 <label htmlFor="terminalInput">admin@laptop {path} % </label>
