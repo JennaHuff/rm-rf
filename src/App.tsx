@@ -120,7 +120,9 @@ function findParentDirectory(
 }
 
 function App() {
-    const [terminalState, setTerminalState] = useState<string[]>([]);
+    const [terminalState, setTerminalState] = useState<string[]>([
+        "Type 'help' for a list of commands",
+    ]);
     const [path, setPath] = useState("~");
 
     function handleCommand(e: React.FormEvent<HTMLFormElement>) {
