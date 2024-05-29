@@ -3,6 +3,7 @@ import { files } from "./files";
 
 export type fileType = {
     name: string;
+    path: string;
     files: (string | fileType)[];
 };
 
@@ -81,7 +82,7 @@ function App() {
                 break;
 
             case "pwd":
-                pushToTerminalState([path]);
+                pushToTerminalState([currDir.path]);
                 break;
 
             case "ls":
