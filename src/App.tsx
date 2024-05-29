@@ -77,7 +77,6 @@ function App() {
                     "ls - List the contents of the current directory",
                     "cd [directory] - Change the current directory",
                     "rm -rf ./ - Empty the current directory",
-                    "cat [file] - Display the contents of a file (only works on password related files)",
                 ]);
                 break;
 
