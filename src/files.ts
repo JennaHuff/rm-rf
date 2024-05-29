@@ -81,7 +81,7 @@ export const files: fileType = {
             ],
         },
         {
-            name: "ImportantDatabase",
+            name: "ProductionDatabase",
             files: [
                 "Database.sql",
                 "DatabaseConfig.json",

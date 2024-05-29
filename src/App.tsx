@@ -43,52 +43,60 @@ function App() {
     const [path, setPath] = useState("~");
 
     function handleCommand(e: React.FormEvent<HTMLFormElement>) {
+        function pushToTerminalState(text: string[]) {
+            if (!command) {
+                setTerminalState((s) => [...s, ...text]);
+                return;
+            }
+            setTerminalState((s) => [
+                ...s,
+                `admin@laptop ${path} % ${formJson.terminalInput}`,
+                ...text,
+            ]);
+        }
         e.preventDefault();
         const form = e.currentTarget;
         const formData = new FormData(form);
         form.reset();
         const formJson = Object.fromEntries(formData.entries());
 
-        const splitCommand: string[] = (formJson.terminalInput as string).split(
-            " "
-        );
+        const command = formJson.terminalInput as string;
+        const splitCommand: string[] = command.split(" ");
         const currDir = findDirectory(path);
+        if (!currDir) return;
         switch (splitCommand[0].toLocaleLowerCase()) {
             case "":
                 setTerminalState((s) => [...s, `admin@laptop ${path} % `]);
                 break;
+
             case "help":
-                setTerminalState((s) => [
-                    ...s,
-                    `admin@laptop ${path} % ${formJson.terminalInput}`,
+                pushToTerminalState([
                     "Available commands:",
                     "clear - Clear the terminal screen",
                     "pwd - Print the current working directory",
                     "ls - List the contents of the current directory",
                     "cd [directory] - Change the current directory",
                     "rm -rf ./ - Empty the current directory",
+                    "cat [file] - Display the contents of a file (only works on password related files)",
                 ]);
                 break;
+
             case "clear":
                 setTerminalState(() => []);
                 break;
+
             case "pwd":
-                setTerminalState((s) => [
-                    ...s,
-                    `admin@laptop ${path} % ${formJson.terminalInput}`,
-                    path,
-                ]);
+                pushToTerminalState([path]);
                 break;
+
             case "ls":
-                if (currDir)
-                    setTerminalState((s) => [
-                        ...s,
-                        `admin@laptop ${path} % ${formJson.terminalInput}`,
-                        ...currDir.files.map((file) =>
-                            typeof file === "string" ? file : file.name
-                        ),
-                    ]);
+                pushToTerminalState(
+                    currDir.files.map((file) =>
+                        typeof file === "string" ? file : file.name
+                    )
+                );
                 break;
+
             case "cd":
                 if (splitCommand[1] === "..") {
                     const parentDir = findParentDirectory(path);
@@ -96,21 +104,24 @@ function App() {
                     return;
                 }
                 if (findDirectory(splitCommand[1])) setPath(splitCommand[1]);
+                break;
 
-                break;
             case "rm":
-                if (formJson.terminalInput === "rm -rf ./") {
-                    if (currDir) currDir.files = [];
+                if (command !== "rm -rf ./") {
+                    pushToTerminalState([
+                        `rm: command not found: ${command}, did you mean 'rm -rf ./'?`,
+                    ]);
                 }
+                currDir.files = [];
                 break;
+
             default:
-                setTerminalState((s) => [
-                    ...s,
-                    `admin@laptop ${path} % ${formJson.terminalInput}`,
+                pushToTerminalState([
                     `zsh: command not found: ${splitCommand[0]}`,
                 ]);
                 break;
         }
+
         const terminalForm = document.getElementById("terminal-form");
         if (terminalForm) {
             terminalForm.scrollIntoView({ block: "center" });
@@ -140,6 +151,7 @@ function App() {
             {terminalState.map((s) => (
                 <p key={crypto.randomUUID()}>{s}</p>
             ))}
+
             <form id="terminal-form" onSubmit={handleCommand}>
                 <label htmlFor="terminalInput">admin@laptop {path} % </label>
                 <input
