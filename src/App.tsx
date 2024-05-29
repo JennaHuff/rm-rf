@@ -44,10 +44,6 @@ function App() {
 
     function handleCommand(e: React.FormEvent<HTMLFormElement>) {
         function pushToTerminalState(text: string[]) {
-            if (!command) {
-                setTerminalState((s) => [...s, ...text]);
-                return;
-            }
             setTerminalState((s) => [
                 ...s,
                 `admin@laptop ${path} % ${formJson.terminalInput}`,
@@ -110,7 +106,9 @@ function App() {
                     pushToTerminalState([
                         `rm: command not found: ${command}, did you mean 'rm -rf ./'?`,
                     ]);
+                    return;
                 }
+                pushToTerminalState([]);
                 currDir.files = [];
                 break;
 
